@@ -1,0 +1,193 @@
+body {
+    background-color: #fff;
+}
+
+div {
+    display: block;
+}
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+}
+
+button {
+    background-color: transparent;
+}
+
+button {
+    -webkit-appearance: button;
+    -webkit-writing-mode: horizontal-tb !important;
+    text-rendering: auto;
+    color: buttontext;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: center;
+    align-items: flex-start;
+    cursor: default;
+    background-color: buttonface;
+    box-sizing: border-box;
+    margin: 0em;
+    font: 400 13.3333px Arial;
+    padding: 1px 6px;
+    border-width: 2px;
+    border-style: outset;
+    border-color: buttonface;
+    border-image: initial;
+}
+
+.wrapper{
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    background-color: #f2f2f2;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.item-node {
+    position: relative;
+}
+
+.item-wrapper {
+    --content-height: 5.25;
+    --toggle-height: 1.5;
+    --spacing: 1;
+    --stroke-width: 2;
+    --duration: 500ms;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+/*content container*/
+.item-content-container {
+    --elevation0:0 1px 1px rgba(0, 0, 0, 0.08);
+    --elevation1:0 1px 4px rgba(0, 51, 73, 0.16);
+    --elevation2:0 1px 4px rgba(0, 51, 73, 0.16), 0 8px 32px rgba(0, 51, 73, 0.08);
+    --elevation: var(--elevation1);
+    -webkit-box-shadow: var(--elevation);
+    box-shadow: var(--elevation);
+    --elevation: var(--elevation1);
+    --height: 5.25;
+    --width: 8.125;
+    background: #fafbfc;
+    border: 1px solid #d7dce0;
+    border-radius: .25rem;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    height: calc(var(--height)*1rem);
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 1rem;
+    width: calc(var(--width)*1rem);
+}
+
+/*button*/
+.btn-group-collapse {
+    font-size: .75rem;
+    line-height: 1.5em;
+    font-weight: 700;
+    border-radius: 4px;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    padding: 0 1rem;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 0;
+    height: auto;
+    padding: 0;
+    --content-height: 5.25;
+    background: #519de0;
+    color: #fafbfc;
+    height: calc(var(--toggle-height)*1rem);
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    outline: none;
+    position: absolute;
+    right: -3rem;
+    top: calc(var(--content-height)*0.5rem - var(--toggle-height)*0.5rem);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: 2rem;
+    z-index: 1;
+}
+
+/* child */
+.children-wrapper {
+    margin-left: 6rem;
+    position: relative;
+}
+
+.child-item {
+    -webkit-transition: opacity var(--duration);
+    transition: opacity var(--duration);
+}
+
+.child-wrapper+.child-wrapper {
+    margin-top: calc(var(--spacing)*1rem);
+}
+
+/* path */
+.item-line-wrapper {
+    --content-height: 5.25;
+    fill: none;
+    left: -3rem;
+    position: absolute;
+    stroke: #c4c4c4;
+    stroke-width: var(--stroke-width);
+    top: calc(var(--content-height)*0.5rem - var(--toggle-height)*0.5rem);
+}
+.item-line-strange {
+    -webkit-animation: _ani 0s linear forwards;
+    animation: _ani 0s linear forwards;
+    left: -6rem;
+}
+
+.item-line-wrapper path {
+    -webkit-animation: _ani calc(var(--duration)*7.5) linear forwards;
+    animation: _ani calc(var(--duration)*7.5) linear forwards;
+    stroke-dasharray: 10000;
+    stroke-dashoffset: 10000;
+}
+
+@-webkit-keyframes _ani {
+    to {
+        stroke-dashoffset: 0
+    }
+
+}
+
+@keyframes _ani {
+    to {
+        stroke-dashoffset: 0
+    }
+
+}

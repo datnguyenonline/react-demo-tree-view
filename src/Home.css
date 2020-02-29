@@ -119,7 +119,6 @@ button {
     -ms-user-select: none;
     user-select: none;
     border: 0;
-    height: auto;
     padding: 0;
     --content-height: 5.25;
     background: #519de0;
@@ -131,7 +130,7 @@ button {
     outline: none;
     position: absolute;
     right: -3rem;
-    top: calc(var(--content-height)*0.5rem - var(--toggle-height)*0.5rem);
+    top: calc(var(--content-height)/2*1rem - var(--toggle-height)/2*1rem);
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -163,7 +162,7 @@ button {
     position: absolute;
     stroke: #c4c4c4;
     stroke-width: var(--stroke-width);
-    top: calc(var(--content-height)*0.5rem - var(--toggle-height)*0.5rem);
+    top: calc(var(--content-height)/2*1rem - var(--toggle-height)/2*1rem);
 }
 .item-line-strange {
     -webkit-animation: _ani 0s linear forwards;

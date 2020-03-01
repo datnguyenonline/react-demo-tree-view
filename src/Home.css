@@ -162,7 +162,7 @@ button {
     position: absolute;
     stroke: #c4c4c4;
     stroke-width: var(--stroke-width);
-    top: calc(var(--content-height)/2*1rem - var(--toggle-height)/2*1rem);
+    top: 1.875rem;
 }
 .item-line-strange {
     -webkit-animation: _ani 0s linear forwards;

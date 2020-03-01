@@ -130,7 +130,7 @@ button {
     outline: none;
     position: absolute;
     right: -3rem;
-    top: calc(var(--content-height)/2*1rem - var(--toggle-height)/2*1rem);
+    top: 1.875rem;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;

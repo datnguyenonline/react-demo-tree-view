@@ -10,13 +10,19 @@ const width = 48;
 
 export default class Home extends React.Component {  
 
+    componentWillMount() {
+        this.setState({
+            nodeList: []
+        })
+    }
+
     /**
      * collapse button event, append rendering child nodes 
      */
-    collapseChild(number, element) {
+    collapseChild(number, parent_key, element) {
+        let list = this.state.nodeList;
+
         if (!$(element.target).hasClass('opened')) {
-            let idList = [];
-            let nodeList = [];
             for (let i = 0; i < number; i++) {
                 let j = (i - 2) >= 0? i : 0;
                 let height = 24 + (87 * i) + (10 * j);
@@ -30,49 +36,34 @@ export default class Home extends React.Component {
 
                 let id = HelperCommon.cMakeID(4);
                 let newNum = HelperCommon.cRandomNumber();
-                let node = (  
-                    <div className="child-wrapper">
-                        <div className="child-item">
-                            <svg className={"item-line-wrapper " + ((i===0)?'item-line-strange':'')} height={height} width="96">
-                                <path d={path}></path>
-                            </svg>
-                            <div className="item-wrapper">
-                                <div className="item-node" id={"draggable_" + id} draggable="true">
-                                    <div className="item-content-container">
-                                        <div className="item-content">
-                                            This is test {i+1}
-                                            <br />
-                                            Total: {newNum}
-                                        </div>
-                                    </div>
-                                    <button className="btn-group-collapse" type="button" onClick={this.collapseChild.bind(this, newNum)}>{newNum} &gt;</button>
-                                </div>
-                                <div className="children-wrapper"></div>
-                            </div>
-                        </div>
-                    </div>
-                );
-                nodeList.push(node);
-                idList.push(id);
+                let key = (parent_key!=0)?parent_key + '-' + String(i+1):String(i+1);
+                let obj = {
+                    height: height,
+                    line: line,
+                    path: path,
+                    id: id,
+                    newNum: newNum,
+                    key: key,
+                    parent_key: parent_key
+                };
+                console.log(obj);
+                list.push(obj);
             }
-
-            // render child nodes to .children-wrapper div
-            const appendEl = $(element.target).parent().next();
-            const container = ReactDOM.findDOMNode(appendEl[0]);
-            ReactDOM.render(nodeList, container);
+            console.log(list);
+            this.setState({
+                nodeList: list
+            });
 
             // update parent, draw lines
-            this._updateParent(element.target);
-            this._initDropNode();
+            //this._updateParent(element.target);
+            //this._initDropNode();
 
             // update button status class
             $(element.target).addClass('opened');
         } else {
             if ($(element.target).parent().next().is('div')) {
                 $(element.target).removeClass('opened');
-                // destroy all child nodes
-                ReactDOM.unmountComponentAtNode($(element.target).parent().next()[0]);
-                this._updateParent(element.target);
+                //this._updateParent(element.target);
             }
         }
     }
@@ -195,6 +186,42 @@ export default class Home extends React.Component {
         this._updateEnv();
     }
 
+    renderNode(nodeList, parent) {
+        console.log(parent);
+        console.log(nodeList);
+        
+        let nodeListHtml;
+        if (nodeList !== undefined) {
+            nodeListHtml = nodeList.map((node, i) => {
+                if (node.parent_key == parent) {
+                    return (
+                        <div className="child-wrapper" key={node.key}>
+                            <div className="child-item">
+                                <svg className={"item-line-wrapper " + ((i===0)?'item-line-strange':'')} height={node.height} width="96">
+                                    <path d={node.path}></path>
+                                </svg>
+                                <div className="item-wrapper">
+                                    <div className="item-node" id={"draggable_" + node.id} draggable="true">
+                                        <div className="item-content-container">
+                                            <div className="item-content">
+                                                This is test {i+1}
+                                                <br />
+                                                Total: {node.newNum}
+                                            </div>
+                                        </div>
+                                        <button className="btn-group-collapse" type="button" onClick={this.collapseChild.bind(this, node.newNum, node.key)}>{node.newNum} &gt;</button>
+                                    </div>
+                                    <div className="children-wrapper">{this.renderNode(nodeList.filter( function (newNode) {return newNode.parent_key === node.key;}), node.key)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+            })
+        }
+        return nodeListHtml;
+    }
+
     render() {
         return ( 
             <div className="wrapper">
@@ -207,9 +234,11 @@ export default class Home extends React.Component {
                                     This is test
                                 </div>
                             </div>
-                            <button className="btn-group-collapse" type="button" onClick={this.collapseChild.bind(this, 4)}>4 &gt;</button>
+                            <button className="btn-group-collapse" type="button" onClick={this.collapseChild.bind(this, 4, 0)}>4 &gt;</button>
                         </div>
-                        <div className="children-wrapper"></div>
+                        <div className="children-wrapper">
+                            { this.renderNode(this.state.nodeList, 0) }
+                        </div>
                     </div>
                 </div>
             </div>

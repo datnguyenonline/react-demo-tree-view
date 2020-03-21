@@ -41,7 +41,7 @@ export default class Home extends React.Component {
         } else {
             let curObj; 
             let curIdx;
-            list.map((value, index) => {
+            list.forEach((value, index) => {
                 if (value.id === target) {
                     curIdx = index;
                     curObj = value;
@@ -73,7 +73,7 @@ export default class Home extends React.Component {
         if ($(target).next().is('div')){
             let nextId = $(target).next().attr('id');
             let height = 0;
-            list.map((value, index) => {
+            list.forEach((value, index) => {
                 if ((value.id) === nextId) {
                     if (type === 1) 
                         height = value.height + (168+12)*number;
@@ -193,6 +193,22 @@ export default class Home extends React.Component {
         this.setState({viewStyle:e.key})
     }
 
+    handleOnDragStart(e) {
+
+    }
+
+    handleOnDragOver(e) {
+        e.preventDefault();
+    }
+
+    handleOnDragLeave(e) {
+
+    }
+
+    handleOnDrop(e) {
+
+    }
+
     /**
      * recursive rendering node list
      * @param {array} nodeList 
@@ -209,13 +225,18 @@ export default class Home extends React.Component {
                 switch (this.state.viewStyle) {
                     case "0":
                         result = (
-                            <div className="child-wrapper" key={node.id} id={node.id}>
+                            <div className="child-wrapper" key={node.id} id={node.id} draggable={true} 
+                            onDragStart={e => this.handleOnDragStart(e)}
+                            onDragOver={e => this.handleOnDragOver(e)}
+                            onDragLeave={e => this.handleOnDragLeave(e)}
+                            onDrop={e => this.handleOnDrop(e)}
+                            >
                                 <div className="child-item">
                                     <svg className={"item-line-wrapper " + ((i===0)?'item-line-strange':'')} height={node.height} width="96">
                                         <path d={node.path}></path>
                                     </svg>
                                     <div className="item-wrapper">
-                                        <div className="item-node" id={"draggable_" + node.id} draggable="true">
+                                        <div className="item-node" id={"draggable_" + node.id}>
                                             <div className="item-content-container">
                                                 <div className="item-content">
                                                     Id: {node.id}<br />

@@ -12,3 +12,11 @@ export const cMakeID = (length) => {
     }
     return result;
 }
+
+export const rswitch = (param, cases) => {
+    if (cases[param]) {
+      return cases[param]
+    } else {
+      return cases.default
+    }
+}

@@ -9,6 +9,7 @@ import 'antd/dist/antd.css';
 
 const width = 64;
 const menuStyleList = ['Horizontal Tree', 'Vertical Tree', 'List'];
+const colorGreen = 'rgba(85, 172, 63, 0.5)';
 
 export default class Home extends React.Component { 
 
@@ -53,42 +54,45 @@ export default class Home extends React.Component {
                     list.push(element);
                 });
                 list[curIdx].isOpen = 1;
-                this.setState({ nodeList: list }, this._updateParent('#' + target, number - 1, 1));
+                this.setState({ nodeList: list }, this._drawLine(this.state.nodeList));
             } else {
                 list[curIdx].isOpen = 0;
-                this.setState({ nodeList: list }, this._updateParent('#' + target, number - 1, 0, $('#' + target).height()));
                 this.removeNode(target);
             }
         }
     }
 
-    _updateParent(target, number, type, minusVal) {
-        if ($(target).attr('class') === 'child-wrapper') {
-            this._updateLine($(target), number, type, minusVal);
-            this._updateParent($(target).parent().parent().parent().parent(), number, type, minusVal);
+    /**
+     * recursive drawing line from root
+     * @param {string} target 
+     */
+    _drawLine(e, target) {
+        if (target === undefined) {
+            target = $('#rootNode').next().children();
+        } else {
+            target = $('#'+target).find('.children-wrapper').first().children();
         }
-    }
-    _updateLine(target, number, type, minusVal) {
-        let list = this.state.nodeList;
-        if ($(target).next().is('div')){
-            let nextId = $(target).next().attr('id');
-            let height = 0;
-            list.forEach((value, index) => {
-                if ((value.id) === nextId) {
-                    if (type === 1) 
-                        height = value.height + (168+12)*number;
-                    else
-                        height = value.height - minusVal + 168 + 12;  
-                    let c_update = [{x:0, y:12}, {x:width, y:12}, {x:0, y:(height-1)}, {x:width, y:(height-1)}];
-                    let path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' C' + c_update[1].x + ',' + c_update[1].y + ' ' + c_update[2].x + ',' + c_update[2].y + ' ' + c_update[3].x + ',' + c_update[3].y;
-                    list[index].height = height;
-                    list[index].path = path_update;
-                    this.setState({nodeList: list});
-                    this._updateLine($(target).next(), number, type, minusVal);
-                }
-            });
-        }
-    
+        let height = 0;
+        target.each((index, value) => {
+            height = (index === 0) ? 24 : height+$(target[index-1]).height() + 12;
+            let c_update;
+            let path_update;
+            if (index === 0) {
+                c_update = [{x:0, y:12}, {x:96, y:12}];
+                path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' ' + c_update[1].x + ',' + c_update[1].y;
+            } else {
+                c_update = [{x:0, y:12}, {x:width, y:12}, {x:0, y:(height-1)}, {x:width, y:(height-1)}];
+                path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' C' + c_update[1].x + ',' + c_update[1].y + ' ' + c_update[2].x + ',' + c_update[2].y + ' ' + c_update[3].x + ',' + c_update[3].y;
+            }
+            let svg = '<svg class="item-line-wrapper" height="'+ height + '" width="96"><path d="' + path_update + '"></path></svg>';
+            if ($(value).children().first().children().first().is('svg')) {
+                $(value).find('svg').first().attr('height', height);
+                $(value).find('svg').first().find('path').attr('d', path_update);
+            } else {
+                $(value).children().first().prepend(svg);
+            }
+            this._drawLine(e, $(value).attr('id'));
+        });
     }
 
     /**
@@ -135,36 +139,40 @@ export default class Home extends React.Component {
         $('.wrapper').height($( window ).height() - 40);
 
         // drag to scroll x
-        const slider = document.querySelector('.wrapper');
-        let isDown = false;
-        let startX;
-        let scrollLeft;
+        // const slider = document.querySelector('.wrapper');
+        // let isDown = false;
+        // let startX;
+        // let scrollLeft;
 
-        slider.addEventListener('mousedown', (e) => {
-            isDown = true;
-            slider.classList.add('active');
-            startX = e.pageX - slider.offsetLeft;
-            scrollLeft = slider.scrollLeft;
-        });
-        slider.addEventListener('mouseleave', () => {
-            isDown = false;
-            slider.classList.remove('active');
-        });
-        slider.addEventListener('mouseup', () => {
-            isDown = false;
-            slider.classList.remove('active');
-        });
-        slider.addEventListener('mousemove', (e) => {
-            if(!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - slider.offsetLeft;
-            const walk = (x - startX) * 3; //scroll-fast
-            slider.scrollLeft = scrollLeft - walk;
-        });
+        // slider.addEventListener('mousedown', (e) => {
+        //     isDown = true;
+        //     slider.classList.add('active');
+        //     startX = e.pageX - slider.offsetLeft;
+        //     scrollLeft = slider.scrollLeft;
+        // });
+        // slider.addEventListener('mouseleave', () => {
+        //     isDown = false;
+        //     slider.classList.remove('active');
+        // });
+        // slider.addEventListener('mouseup', () => {
+        //     isDown = false;
+        //     slider.classList.remove('active');
+        // });
+        // slider.addEventListener('mousemove', (e) => {
+        //     if(!isDown) return;
+        //     e.preventDefault();
+        //     const x = e.pageX - slider.offsetLeft;
+        //     const walk = (x - startX) * 3; //scroll-fast
+        //     slider.scrollLeft = scrollLeft - walk;
+        // });
     }
 
     componentDidMount() {
         this._updateEnv();
+    }
+
+    componentDidUpdate() {
+        this._drawLine();
     }
 
     /**
@@ -193,20 +201,68 @@ export default class Home extends React.Component {
         this.setState({viewStyle:e.key})
     }
 
-    handleOnDragStart(e) {
-
+    /**
+     * drag start event, set transfer data
+     * @param {event} e 
+     * @param {node} data 
+     */
+    handleOnDragStart(e, node) {
+        e.persist();
+        e.dataTransfer.clearData();
+        e.dataTransfer.setData("text/plain", JSON.stringify(node));
     }
 
-    handleOnDragOver(e) {
+    /**
+     * drag to node having same parent
+     * @param {event} e 
+     * @param {node} node 
+     */
+    handleOnDragOver(e, node) {
         e.preventDefault();
+        if (e.currentTarget.dataset.parent === node.parent.toString()) {
+            e.currentTarget.style.backgroundColor = colorGreen;
+        }
     }
 
+    /**
+     * drag leave node having same parent
+     * @param {event} e 
+     */
     handleOnDragLeave(e) {
-
+        e.preventDefault();
+        if (e.currentTarget.style.backgroundColor !== '') {
+            e.currentTarget.style.removeProperty('background-color');
+        }  
     }
 
-    handleOnDrop(e) {
-
+    /**
+     * drop event, swap node position
+     * @param {event} e 
+     * @param {node} node 
+     */
+    handleOnDrop(e, node) {
+        e.preventDefault();
+        e.persist();
+        const transText = e.dataTransfer.getData("text");
+        let dragEl = JSON.parse(transText);
+        if (e.currentTarget.style.backgroundColor !== '')
+            e.currentTarget.style.removeProperty('background-color');
+        if (dragEl.parent === node.parent) {
+            let list = this.state.nodeList;
+            let dragIdx;
+            let dropIdx;
+            list.forEach((value, index) => {
+                if (value.id === dragEl.id) dragIdx = index;
+                if (value.id === node.id) dropIdx = index;
+            });
+            if (dragIdx !== dropIdx) {
+                const temp = list[dragIdx];
+                list[dragIdx] = list[dropIdx];
+                list[dropIdx] = temp;
+                this.setState({nodeList:list});
+            }
+            
+        } 
     }
 
     /**
@@ -225,19 +281,19 @@ export default class Home extends React.Component {
                 switch (this.state.viewStyle) {
                     case "0":
                         result = (
-                            <div className="child-wrapper" key={node.id} id={node.id} draggable={true} 
-                            onDragStart={e => this.handleOnDragStart(e)}
-                            onDragOver={e => this.handleOnDragOver(e)}
-                            onDragLeave={e => this.handleOnDragLeave(e)}
-                            onDrop={e => this.handleOnDrop(e)}
-                            >
+                            <div className="child-wrapper" key={node.id} id={node.id}>
                                 <div className="child-item">
-                                    <svg className={"item-line-wrapper " + ((i===0)?'item-line-strange':'')} height={node.height} width="96">
+                                    {/* <svg className={"item-line-wrapper " + ((i===0)?'item-line-strange':'')} height={node.height} width="96">
                                         <path d={node.path}></path>
-                                    </svg>
+                                    </svg> */}
                                     <div className="item-wrapper">
-                                        <div className="item-node" id={"draggable_" + node.id}>
-                                            <div className="item-content-container">
+                                        <div className="item-node">
+                                            <div className="item-content-container" id={"draggable_" + node.id} data-parent={node.parent} 
+                                                draggable={true}
+                                                onDragStart={e => this.handleOnDragStart(e, node)}
+                                                onDragOver={e => this.handleOnDragOver(e, node)}
+                                                onDragLeave={e => this.handleOnDragLeave(e)}
+                                                onDrop={e => this.handleOnDrop(e, node)}>
                                                 <div className="item-content">
                                                     Id: {node.id}<br />
                                                     Parent: {node.parent}<br />
@@ -259,7 +315,7 @@ export default class Home extends React.Component {
                     case "2":
                         result = (
                             <div style={{paddingLeft:'25px'}} key={node.id}>
-                                <div className="tree-list-item">{i+1}. This is node {node.id} <Button size="small" shape="circle" type={node.isOpen === 0?'primary':'default'} onClick={this.collapseChild.bind(this, node.total, node.id)}>{node.total}</Button></div>
+                                <div className="tree-list-item">{i+1}. This is node {node.id} <Button size="small" shape="circle" type={node.isOpen === 0?'primary':'default'}>{node.total}</Button></div>
                                 {this.renderNode(childList)}
                             </div>
                         );
@@ -273,16 +329,8 @@ export default class Home extends React.Component {
         return nodeListHtml;
     }
 
-    rswitch (param, cases) {
-        if (cases[param]) {
-          return cases[param]
-        } else {
-          return cases.default
-        }
-    }
-
     render() {
-        console.log(this.state.nodeList);
+        //console.log(this.state.nodeList);
         let menu = (
             <Menu onClick={this.handleMenuClick.bind(this)}>
                 {   
@@ -307,9 +355,9 @@ export default class Home extends React.Component {
                 </div>
                 <br />
                 <div className="container">
-                   {this.rswitch(this.state.viewStyle,{
+                   {HelperCommon.rswitch(this.state.viewStyle,{
                        '0': <div className="item-wrapper">
-                                <div className="item-node" id="draggable_root" draggable="true">
+                                <div className="item-node" id="rootNode">
                                     <div className="item-content-container">
                                         <div className="item-content">
                                             This is root
@@ -324,7 +372,7 @@ export default class Home extends React.Component {
                         '2':
                             <div className="tree-list-container"> 
                                 <div className="tree-list-item">
-                                    This is root <Button size="small" shape="circle" type={this.state.rootIsOpen === 0?'primary':'default'} onClick={this.collapseChild.bind(this, 4, 0)}>4</Button>
+                                    This is root <Button size="small" shape="circle" type={this.state.rootIsOpen === 0?'primary':'default'}>4</Button>
                                 </div>
                                 { this.renderNode(this.state.nodeList, true) }
                             </div>

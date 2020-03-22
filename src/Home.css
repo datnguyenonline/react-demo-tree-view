@@ -1,7 +1,6 @@
 body {
     background-color: #fff;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 12px;
 }
 
 div {
@@ -14,10 +13,6 @@ svg:not(:root) {
 
 button, input, select, textarea {
     font-family: inherit;
-}
-
-button {
-    background-color: transparent;
 }
 
 button {

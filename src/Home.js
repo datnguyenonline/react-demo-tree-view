@@ -103,22 +103,9 @@ export default class Home extends React.Component {
     _generateNodes(number, target) {
         let list = [];
         for (let i = 0; i < number; i++) {
-            let j = (i - 2) >= 0? i : 0;
-            let height = 24 + (174 * i) + (10 * j);
-            let line = [{x:0, y:12}, {x:96, y:12}];
-            let path = '';
-            let c = [{x:0, y:12}, {x:width, y:12}, {x:0, y:(height-1)}, {x:width, y:(height-1)}];
-            if (i === 0)
-                path = 'M' + line[0].x + ',' + line[0].y + ' ' + line[1].x + ',' + line[1].y;
-            else
-                path = 'M' + c[0].x + ',' + c[0].y + ' C' + c[1].x + ',' + c[1].y + ' ' + c[2].x + ',' + c[2].y + ' ' + c[3].x + ',' + c[3].y;
-
             let id = HelperCommon.cMakeID(4);
             let total = HelperCommon.cRandomNumber();
             let obj = {
-                height: height,
-                line: line,
-                path: path,
                 id: id,
                 total: total,
                 parent: target,
@@ -283,9 +270,6 @@ export default class Home extends React.Component {
                         result = (
                             <div className="child-wrapper" key={node.id} id={node.id}>
                                 <div className="child-item">
-                                    {/* <svg className={"item-line-wrapper " + ((i===0)?'item-line-strange':'')} height={node.height} width="96">
-                                        <path d={node.path}></path>
-                                    </svg> */}
                                     <div className="item-wrapper">
                                         <div className="item-node">
                                             <div className="item-content-container" id={"draggable_" + node.id} data-parent={node.parent} 
@@ -315,7 +299,7 @@ export default class Home extends React.Component {
                     case "2":
                         result = (
                             <div style={{paddingLeft:'25px'}} key={node.id}>
-                                <div className="tree-list-item">{i+1}. This is node {node.id} <Button size="small" shape="circle" type={node.isOpen === 0?'primary':'default'}>{node.total}</Button></div>
+                                <div className="tree-list-item">{i+1}. This is node {node.id} <Button size="small" shape="circle" type={node.isOpen === 0?'primary':'default'} onClick={this.collapseChild.bind(this, node.total, node.id)}>{node.total}</Button></div>
                                 {this.renderNode(childList)}
                             </div>
                         );
@@ -372,7 +356,7 @@ export default class Home extends React.Component {
                         '2':
                             <div className="tree-list-container"> 
                                 <div className="tree-list-item">
-                                    This is root <Button size="small" shape="circle" type={this.state.rootIsOpen === 0?'primary':'default'}>4</Button>
+                                    This is root <Button size="small" shape="circle" type={this.state.rootIsOpen === 0?'primary':'default'} onClick={this.collapseChild.bind(this, 4, 0)}>4</Button>
                                 </div>
                                 { this.renderNode(this.state.nodeList, true) }
                             </div>

@@ -10,10 +10,7 @@ svg:not(:root) {
     overflow: hidden;
 }
 
-button,
-input,
-select,
-textarea {
+button, input, select, textarea {
     font-family: inherit;
 }
 
@@ -66,7 +63,6 @@ button {
     display: flex;
 }
 
-
 /*content container*/
 
 .item-content-container {
@@ -97,7 +93,6 @@ button {
     padding: 1rem;
     width: calc(var(--width)*1rem);
 }
-
 
 /*button*/
 
@@ -144,7 +139,6 @@ button {
     background: #b2b2b2;
 }
 
-
 /* child */
 
 .children-wrapper {
@@ -160,7 +154,6 @@ button {
 .child-wrapper+.child-wrapper {
     margin-top: calc(var(--spacing)*1rem);
 }
-
 
 /* path */
 
@@ -199,8 +192,7 @@ button {
     }
 }
 
-.tree-list-container,
-.tree-list-item {
+.tree-list-container, .tree-list-item {
     --elevation0: 0 1px 1px rgba(0, 0, 0, 0.08);
     --elevation1: 0 1px 4px rgba(0, 51, 73, 0.16);
     --elevation2: 0 1px 4px rgba(0, 51, 73, 0.16), 0 8px 32px rgba(0, 51, 73, 0.08);
@@ -224,8 +216,7 @@ ul.tree {
     white-space: nowrap;
 }
 
-ul.tree,
-ul.tree ul {
+ul.tree, ul.tree ul {
     width: auto;
     margin: 0;
     padding: 0;
@@ -241,8 +232,7 @@ ul.tree li {
     text-align: center;
 }
 
-ul.tree li div.item-content-container,
-ul.tree ul li div.item-content-container {
+ul.tree li div.item-content-container, ul.tree ul li div.item-content-container {
     margin: 0 auto;
     text-align: left;
 }

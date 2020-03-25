@@ -1,6 +1,5 @@
 body {
     background-color: #fff;
-    font-family: 'Courier New', Courier, monospace;
 }
 
 div {
@@ -11,7 +10,10 @@ svg:not(:root) {
     overflow: hidden;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
     font-family: inherit;
 }
 
@@ -40,7 +42,7 @@ button {
     border-image: initial;
 }
 
-.wrapper{
+.wrapper {
     overflow: auto;
     width: 100%;
     height: 100%;
@@ -64,11 +66,13 @@ button {
     display: flex;
 }
 
+
 /*content container*/
+
 .item-content-container {
-    --elevation0:0 1px 1px rgba(0, 0, 0, 0.08);
-    --elevation1:0 1px 4px rgba(0, 51, 73, 0.16);
-    --elevation2:0 1px 4px rgba(0, 51, 73, 0.16), 0 8px 32px rgba(0, 51, 73, 0.08);
+    --elevation0: 0 1px 1px rgba(0, 0, 0, 0.08);
+    --elevation1: 0 1px 4px rgba(0, 51, 73, 0.16);
+    --elevation2: 0 1px 4px rgba(0, 51, 73, 0.16), 0 8px 32px rgba(0, 51, 73, 0.08);
     --elevation: var(--elevation1);
     -webkit-box-shadow: var(--elevation);
     box-shadow: var(--elevation);
@@ -94,7 +98,9 @@ button {
     width: calc(var(--width)*1rem);
 }
 
+
 /*button*/
+
 .btn-group-collapse {
     font-size: .75rem;
     line-height: 1.5em;
@@ -138,7 +144,9 @@ button {
     background: #b2b2b2;
 }
 
+
 /* child */
+
 .children-wrapper {
     margin-left: 6rem;
     position: relative;
@@ -153,7 +161,9 @@ button {
     margin-top: calc(var(--spacing)*1rem);
 }
 
+
 /* path */
+
 .item-line-wrapper {
     --content-height: 10.5;
     fill: none;
@@ -163,6 +173,7 @@ button {
     stroke-width: var(--stroke-width);
     top: 4.5rem;
 }
+
 .item-line-strange {
     -webkit-animation: _ani 0s linear forwards;
     animation: _ani 0s linear forwards;
@@ -180,20 +191,19 @@ button {
     to {
         stroke-dashoffset: 0
     }
-
 }
 
 @keyframes _ani {
     to {
         stroke-dashoffset: 0
     }
-
 }
 
-.tree-list-container, .tree-list-item {
-    --elevation0:0 1px 1px rgba(0, 0, 0, 0.08);
-    --elevation1:0 1px 4px rgba(0, 51, 73, 0.16);
-    --elevation2:0 1px 4px rgba(0, 51, 73, 0.16), 0 8px 32px rgba(0, 51, 73, 0.08);
+.tree-list-container,
+.tree-list-item {
+    --elevation0: 0 1px 1px rgba(0, 0, 0, 0.08);
+    --elevation1: 0 1px 4px rgba(0, 51, 73, 0.16);
+    --elevation2: 0 1px 4px rgba(0, 51, 73, 0.16), 0 8px 32px rgba(0, 51, 73, 0.08);
     --elevation: var(--elevation1);
     box-shadow: var(--elevation);
     --elevation: var(--elevation1);
@@ -207,4 +217,54 @@ button {
 
 .tree-list-item {
     padding: 10px 15px;
+}
+
+ul.tree {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+ul.tree,
+ul.tree ul {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+ul.tree li {
+    display: block;
+    width: auto;
+    float: left;
+    padding: 0 5px;
+    margin: 0;
+    text-align: center;
+}
+
+ul.tree li div.item-content-container,
+ul.tree ul li div.item-content-container {
+    margin: 0 auto;
+    text-align: left;
+}
+
+ul.tree .btn-group-collapse {
+    position: relative;
+    top: -3px;
+    right: 0;
+    margin: 0 auto;
+}
+
+ul.tree li span {
+    display: block;
+    width: 5em;
+    margin: 0 auto;
+    text-align: center;
+    white-space: normal;
+    letter-spacing: normal;
+}
+
+.v-tree-container {
+    font-family: sans-serif;
+    color: #666;
+    width: max-content;
 }

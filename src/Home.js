@@ -67,32 +67,81 @@ export default class Home extends React.Component {
    * @param {string} target 
    */
   _drawLine(e, target) {
-    if (target === undefined) {
-      target = $('#rootNode').next().children();
-    } else {
-      target = $('#' + target).find('.children-wrapper').first().children();
+    if (this.state.viewStyle === "0") {
+      if (target === 'root') {
+        target = $('#rootNode').next().children();
+      } else {
+        target = $('#' + target).find('.children-wrapper').first().children();
+      }
+      let height = 0;
+      target.each((index, value) => {
+        height = (index === 0) ? 24 : height + $(target[index - 1]).height() + 12;
+        let c_update;
+        let path_update;
+        if (index === 0) {
+          c_update = [{ x: 0, y: 12 }, { x: 96, y: 12 }];
+          path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' ' + c_update[1].x + ',' + c_update[1].y;
+        } else {
+          c_update = [{ x: 0, y: 12 }, { x: width, y: 12 }, { x: 0, y: (height - 1) }, { x: width, y: (height - 1) }];
+          path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' C' + c_update[1].x + ',' + c_update[1].y + ' ' + c_update[2].x + ',' + c_update[2].y + ' ' + c_update[3].x + ',' + c_update[3].y;
+        }
+        let svg = '<svg class="item-line-wrapper" height="' + height + '" width="96"><path d="' + path_update + '"></path></svg>';
+        if ($(value).children().first().children().first().is('svg')) {
+          $(value).find('svg').first().attr('height', height);
+          $(value).find('svg').first().find('path').attr('d', path_update);
+        } else {
+          $(value).children().first().prepend(svg);
+        }
+        this._drawLine(e, $(value).attr('id'));
+      });
+    } else if (this.state.viewStyle === "1") {
+      if (target === 'root') {
+        target = $('ul.tree').find('li').first().find('ul').first();
+      } else {
+        target = $('#' + target).find('ul').first();
+      }
+      let parentWidth = $(target).width();console.log(parentWidth);
+      let height = 48;
+      let total = $(target).children().length - 1;
+      if (total > -1) {
+        let leftWidth = 0;
+        let rightWidth = 0;
+        target.children().each((index, value) => {
+          let width;
+          let c_update;
+          let path_update;
+          let pos = 260/2;
+          let svg;
+          if (index < total/2) {
+            leftWidth += (index===0)?0:$(target.children()[index-1]).width();
+            pos += parseInt(($(value).find('.item-content-container').css('margin-left'))); 
+            width = parentWidth/2 - index*10 - leftWidth - pos;
+            c_update = [{ x: width, y: 0 }, { x: width, y: height - 1 }, { x: 0, y: 0 }, { x: 0, y: (height - 1) }];
+            path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' C' + c_update[1].x + ',' + c_update[1].y + ' ' + c_update[2].x + ',' + c_update[2].y + ' ' + c_update[3].x + ',' + c_update[3].y;
+            svg = '<svg class="item-line-wrapper" height="' + height + '" width="' + width + '" style="left:'+(pos)+'px"><path d="' + path_update + '"></path></svg>';
+          } else {
+            rightWidth += (index===total)?0:$(target.children()[total-1]).width();
+            pos += parseInt(($(value).find('.item-content-container').css('margin-right')));
+            width = parentWidth/2 - (total-index)*10 - rightWidth - pos;
+            c_update = [{ x: 0, y: 0 }, { x: 0, y: height - 1 }, { x: width, y: 0 }, { x: width, y: (height - 1) }];
+            path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' C' + c_update[1].x + ',' + c_update[1].y + ' ' + c_update[2].x + ',' + c_update[2].y + ' ' + c_update[3].x + ',' + c_update[3].y;
+            svg = '<svg class="item-line-wrapper" height="' + height + '" width="' + width + '" style="right:'+pos+'px"><path d="' + path_update + '"></path></svg>';
+          }
+          if ($(value).children().first().is('svg')) {
+            if (index < total/2) {
+              $(value).find('svg').first().css('left', pos);
+            } else {
+              $(value).find('svg').first().css('right', pos);
+            }
+            $(value).find('svg').first().attr('width', width);
+            $(value).find('svg').first().find('path').attr('d', path_update);
+          } else {
+            $(value).prepend(svg);
+          }
+          this._drawLine(e, $(value).attr('id'));
+        });
+      } 
     }
-    let height = 0;
-    target.each((index, value) => {
-      height = (index === 0) ? 24 : height + $(target[index - 1]).height() + 12;
-      let c_update;
-      let path_update;
-      if (index === 0) {
-        c_update = [{ x: 0, y: 12 }, { x: 96, y: 12 }];
-        path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' ' + c_update[1].x + ',' + c_update[1].y;
-      } else {
-        c_update = [{ x: 0, y: 12 }, { x: width, y: 12 }, { x: 0, y: (height - 1) }, { x: width, y: (height - 1) }];
-        path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' C' + c_update[1].x + ',' + c_update[1].y + ' ' + c_update[2].x + ',' + c_update[2].y + ' ' + c_update[3].x + ',' + c_update[3].y;
-      }
-      let svg = '<svg class="item-line-wrapper" height="' + height + '" width="96"><path d="' + path_update + '"></path></svg>';
-      if ($(value).children().first().children().first().is('svg')) {
-        $(value).find('svg').first().attr('height', height);
-        $(value).find('svg').first().find('path').attr('d', path_update);
-      } else {
-        $(value).children().first().prepend(svg);
-      }
-      this._drawLine(e, $(value).attr('id'));
-    });
   }
 
   /**
@@ -158,8 +207,8 @@ export default class Home extends React.Component {
     this._updateEnv();
   }
 
-  componentDidUpdate() {
-    this._drawLine();
+  componentDidUpdate(prevProps) {
+    this._drawLine(prevProps, 'root');
   }
 
   /**
@@ -294,7 +343,7 @@ export default class Home extends React.Component {
             break;
           case "1":
             result = (
-              <li key={node.id}>
+              <li key={node.id} id={node.id}>
                 <div className="item-content-container" id={"draggable_" + node.id} data-parent={node.parent}
                   draggable={true}
                   onDragStart={e => this.handleOnDragStart(e, node)}
@@ -372,12 +421,12 @@ export default class Home extends React.Component {
               </div>,
             '1':
               <div className="v-tree-container">
-                <ul class="tree">
+                <ul className="tree">
                   <li>
                     <div className="item-content-container">
                       <div className="item-content">
                         This is root
-                                            </div>
+                      </div>
                     </div>
                     <button className={"btn-group-collapse " + (this.state.rootIsOpen ? 'opened' : '')} type="button" onClick={this.collapseChild.bind(this, 4, 0)}>4</button>
                     <ul>{this.renderNode(this.state.nodeList, true)}</ul>

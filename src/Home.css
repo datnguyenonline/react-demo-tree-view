@@ -223,6 +223,10 @@ ul.tree, ul.tree ul {
     list-style-type: none;
 }
 
+ul.tree ul {
+    margin-top: 44px;
+}
+
 ul.tree li {
     display: block;
     width: auto;
@@ -230,6 +234,16 @@ ul.tree li {
     padding: 0 5px;
     margin: 0;
     text-align: center;
+    position: relative;
+}
+
+ul.tree li svg {
+    top: -48px;
+    left: unset;
+}
+
+ul.tree li svg path {
+    stroke-dasharray: 0;
 }
 
 ul.tree li div.item-content-container, ul.tree ul li div.item-content-container {

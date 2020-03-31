@@ -100,38 +100,35 @@ export default class Home extends React.Component {
       } else {
         target = $('#' + target).find('ul').first();
       }
-      let parentWidth = $(target).width();console.log(parentWidth);
+      let parentWidth = $(target).width();
       let height = 48;
       let total = $(target).children().length - 1;
       if (total > -1) {
         let leftWidth = 0;
-        let rightWidth = 0;
         target.children().each((index, value) => {
           let width;
           let c_update;
           let path_update;
-          let pos = 260/2;
-          let svg;
-          if (index < total/2) {
-            leftWidth += (index===0)?0:$(target.children()[index-1]).width();
-            pos += parseInt(($(value).find('.item-content-container').css('margin-left'))); 
+          let pos = 260/2 + parseInt(($(value).find('.item-content-container').css('margin-right')));
+          let svg; 
+          leftWidth += (index===0)?0:$(target.children()[index-1]).width();
+          if (leftWidth + index*10 + $(value).width()/2 < parentWidth/2) {
             width = parentWidth/2 - index*10 - leftWidth - pos;
             c_update = [{ x: width, y: 0 }, { x: width, y: height - 1 }, { x: 0, y: 0 }, { x: 0, y: (height - 1) }];
             path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' C' + c_update[1].x + ',' + c_update[1].y + ' ' + c_update[2].x + ',' + c_update[2].y + ' ' + c_update[3].x + ',' + c_update[3].y;
             svg = '<svg class="item-line-wrapper" height="' + height + '" width="' + width + '" style="left:'+(pos)+'px"><path d="' + path_update + '"></path></svg>';
           } else {
-            rightWidth += (index===total)?0:$(target.children()[total-1]).width();
-            pos += parseInt(($(value).find('.item-content-container').css('margin-right')));
-            width = parentWidth/2 - (total-index)*10 - rightWidth - pos;
+            width = leftWidth + (index + 1)*10 + pos - parentWidth/2;
             c_update = [{ x: 0, y: 0 }, { x: 0, y: height - 1 }, { x: width, y: 0 }, { x: width, y: (height - 1) }];
             path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' C' + c_update[1].x + ',' + c_update[1].y + ' ' + c_update[2].x + ',' + c_update[2].y + ' ' + c_update[3].x + ',' + c_update[3].y;
             svg = '<svg class="item-line-wrapper" height="' + height + '" width="' + width + '" style="right:'+pos+'px"><path d="' + path_update + '"></path></svg>';
           }
           if ($(value).children().first().is('svg')) {
-            if (index < total/2) {
+            if (leftWidth + index*10 + $(value).width()/2 < parentWidth/2) {
               $(value).find('svg').first().css('left', pos);
             } else {
               $(value).find('svg').first().css('right', pos);
+              $(value).find('svg').first().css('left', 'unset');
             }
             $(value).find('svg').first().attr('width', width);
             $(value).find('svg').first().find('path').attr('d', path_update);

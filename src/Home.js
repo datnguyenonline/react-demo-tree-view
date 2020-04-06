@@ -101,7 +101,7 @@ export default class Home extends React.Component {
         target = $('#' + target).find('ul').first();
       }
       let parentWidth = $(target).width();
-      let height = 48;
+      let height = 94;
       let total = $(target).children().length - 1;
       if (total > -1) {
         let leftWidth = 0;
@@ -114,12 +114,12 @@ export default class Home extends React.Component {
           leftWidth += (index===0)?0:$(target.children()[index-1]).width();
           if (leftWidth + index*10 + $(value).width()/2 < parentWidth/2) {
             width = parentWidth/2 - index*10 - leftWidth - pos;
-            c_update = [{ x: width, y: 0 }, { x: width, y: height - 1 }, { x: 0, y: 0 }, { x: 0, y: (height - 1) }];
+            c_update = [{ x: width, y: 0 }, { x: width, y: height/2 - 1 }, { x: 0, y: height/2 }, { x: 0, y: (height - 1) }];
             path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' C' + c_update[1].x + ',' + c_update[1].y + ' ' + c_update[2].x + ',' + c_update[2].y + ' ' + c_update[3].x + ',' + c_update[3].y;
             svg = '<svg class="item-line-wrapper" height="' + height + '" width="' + width + '" style="left:'+(pos)+'px"><path d="' + path_update + '"></path></svg>';
           } else {
             width = leftWidth + (index + 1)*10 + pos - parentWidth/2;
-            c_update = [{ x: 0, y: 0 }, { x: 0, y: height - 1 }, { x: width, y: 0 }, { x: width, y: (height - 1) }];
+            c_update = [{ x: 0, y: 0 }, { x: 0, y: height/2 - 1 }, { x: width, y: height/2 }, { x: width, y: (height - 1) }];
             path_update = 'M' + c_update[0].x + ',' + c_update[0].y + ' C' + c_update[1].x + ',' + c_update[1].y + ' ' + c_update[2].x + ',' + c_update[2].y + ' ' + c_update[3].x + ',' + c_update[3].y;
             svg = '<svg class="item-line-wrapper" height="' + height + '" width="' + width + '" style="right:'+pos+'px"><path d="' + path_update + '"></path></svg>';
           }
@@ -325,9 +325,7 @@ export default class Home extends React.Component {
                         onDragLeave={e => this.handleOnDragLeave(e)}
                         onDrop={e => this.handleOnDrop(e, node)}>
                         <div className="item-content">
-                          Id: {node.id}<br />
-                          Parent: {node.parent}<br />
-                          Total: {node.total}<br />
+                          <h2 className="heading">{node.id}</h2>
                         </div>
                       </div>
                       <button className={"btn-group-collapse " + (node.isOpen ? 'opened' : '')} type="button" onClick={this.collapseChild.bind(this, node.total, node.id)}>{node.total}</button>
@@ -348,9 +346,13 @@ export default class Home extends React.Component {
                   onDragLeave={e => this.handleOnDragLeave(e)}
                   onDrop={e => this.handleOnDrop(e, node)}>
                   <div className="item-content">
-                    Id: {node.id}<br />
-                    Parent: {node.parent}<br />
-                    Total: {node.total}<br />
+                    <h2 className="heading">{node.id}</h2>
+                    <div className="photo">
+                      <img src="/user_1.png" />
+                      <img src="/user_2.png" />
+                      <img src="/user_3.png" />
+                      <span className="plus">+3</span>
+                    </div>
                   </div>
                 </div>
                 <button className={"btn-group-collapse " + (node.isOpen ? 'opened' : '')} type="button" onClick={this.collapseChild.bind(this, node.total, node.id)}>{node.total}</button>
@@ -407,8 +409,8 @@ export default class Home extends React.Component {
                 <div className="item-node" id="rootNode">
                   <div className="item-content-container">
                     <div className="item-content">
-                      This is root
-                                        </div>
+                      <h2 className="heading">Board Of Directors</h2>
+                    </div>
                   </div>
                   <button className={"btn-group-collapse " + (this.state.rootIsOpen ? 'opened' : '')} type="button" onClick={this.collapseChild.bind(this, 4, 0)}>4</button>
                 </div>
@@ -422,7 +424,13 @@ export default class Home extends React.Component {
                   <li>
                     <div className="item-content-container">
                       <div className="item-content">
-                        This is root
+                        <h2 className="heading">Board Of Directors</h2>
+                        <div className="photo">
+                          <img src="/user_1.png" />
+                          <img src="/user_2.png" />
+                          <img src="/user_3.png" />
+                          <span className="plus">+3</span>
+                        </div>
                       </div>
                     </div>
                     <button className={"btn-group-collapse " + (this.state.rootIsOpen ? 'opened' : '')} type="button" onClick={this.collapseChild.bind(this, 4, 0)}>4</button>
@@ -433,7 +441,7 @@ export default class Home extends React.Component {
             '2':
               <div className="tree-list-container">
                 <div className="tree-list-item">
-                  This is root <Button size="small" shape="circle" type={this.state.rootIsOpen === 0 ? 'primary' : 'default'} onClick={this.collapseChild.bind(this, 4, 0)}>4</Button>
+                  Board Of Directors <Button size="small" shape="circle" type={this.state.rootIsOpen === 0 ? 'primary' : 'default'} onClick={this.collapseChild.bind(this, 4, 0)}>4</Button>
                 </div>
                 {this.renderNode(this.state.nodeList, true)}
               </div>,
